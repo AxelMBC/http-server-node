@@ -7,8 +7,7 @@ const { PORT } = process.env || 8080;
 
 const __filename = url.fileURLToPath(import.meta.url); // Converts `file://` to OS path
 const __dirname = path.dirname(__filename); // Gets directory path
-
-console.log(__filename, __dirname);
+// console.log(__filename, __dirname);
 
 // Simple Example of server for handling incoming HTTP requests
 const server = http.createServer(async (req, res) => {
