@@ -1,41 +1,34 @@
-import http from "http";
-import fs from "fs/promises";
-import url from "url";
-import path from "path";
+import http from "http"; // Node.js core module (like browser APIs, but for servers)
+import fs from "fs/promises"; // File system with Promises (no callbacks!)
+import url from "url"; // URL parsing (similar to `window.location` but server-side)
+import path from "path"; // Path utilities (like frontend `new URL()` but for files)
 
-const { PORT } = process.env;
+const { PORT } = process.env || 8080;
 
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = url.fileURLToPath(import.meta.url); // Converts `file://` to OS path
+const __dirname = path.dirname(__filename); // Gets directory path
 
 console.log(__filename, __dirname);
 
-// Simple Example of server routing
+// Simple Example of server for handling incoming HTTP requests
 const server = http.createServer(async (req, res) => {
   try {
     if (req.method === "GET") {
       let filePath;
       if (req.url === "/") {
-        res.writeHead(200, { "Content-Type": "text/html" });
         filePath = path.join(__dirname, "public", "index.html");
-        const data = await fs.readFile(filePath);
-        res.write(data);
-        // res.write("<h1>Welcome to the homepage</h1>");
-        res.end();
       } else if (req.url === "/about") {
-        res.writeHead(200, { "Content-Type": "text/html" });
         filePath = path.join(__dirname, "public", "about.html");
-        const data = await fs.readFile(filePath);
-        res.write(data);
-        // res.write("<h1>Welcome to the about page</h1>");
-        res.end();
       } else {
         res.writeHead(404, { "Content-Type": "text/html" });
         res.write("<h1>Page not found</h1>");
         res.end();
+        return;
       }
-      console.log("req url: ", req.url);
-      console.log("req method: ", req.method);
+      res.writeHead(200, { "Content-Type": "text/html" });
+      const data = await fs.readFile(filePath);
+      res.write(data);
+      res.end();
     } else {
       throw new Error("Method not allowed");
     }
